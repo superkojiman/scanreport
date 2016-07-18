@@ -31,18 +31,18 @@ if [[ -z $db ]]; then
 fi
 
 if [[ ! -z $ip ]]; then # search by IP
-	r=$(grep -w $ip $db | sed 's/Ports: /\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | sed 's/Host:/\n\\033[0;32mHost:\\033[0;39m/g' | grep -v closed)
+	r=$(grep -w $ip $db | sed 's/Ports: /\'$'\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | grep -v closed)
 	echo -e "$r"
 
 elif [[ ! -z $port ]]; then # search by port number
-	r=$(grep -w $port $db | sed 's/Ports: /\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | grep -e "Host: " -e ^${port} | sed 's/Host:/\n\\033[0;32mHost:\\033[0;39m/g' | grep -v closed)
+	r=$(grep -w $port $db | sed 's/Ports: /\'$'\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | grep -e "Host: " -e ^${port} | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | grep -v closed)
 	echo -e "$r"
 
 elif [[ ! -z $service ]]; then # search by service name
-	r=$(grep -w -i $service $db | sed 's/Ports: /\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | grep -i -e "Host: " -e ${service} | sed 's/Host:/\n\\033[0;32mHost:\\033[0;39m/g' | grep -v closed)
+	r=$(grep -w -i $service $db | sed 's/Ports: /\'$'\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | grep -i -e "Host: " -e ${service} | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | grep -v closed)
 	echo -e "$r"
 
 else
-	r=$(cat $db | sed 's/Ports: /\n/g' | tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | sed 's/Host:/\n\\033[0;32mHost:\\033[0;39m/g' | grep -v closed)
+	r=$(cat $db | grep -v ^# | sed 's/Ports: /\'$'\n/g' | tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | grep -v closed)
 	echo -e "$r"
 fi
