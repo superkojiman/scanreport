@@ -35,11 +35,11 @@ if [[ ! -z $ip ]]; then # search by IP
 	echo -e "$r"
 
 elif [[ ! -z $port ]]; then # search by port number
-	r=$(grep -w -e "$port\/open" "$db" | grep -v ^# | sed 's/Ports: /\'$'\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | grep -e "Host: " -e ^${port} | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | sed 's/Ignored State.*$//')
+	r=$(grep -w -E -e "($port)\/open" "$db" | grep -v ^# | sed 's/Ports: /\'$'\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | grep -E -e "Host: " -e "^(${port})" | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | sed 's/Ignored State.*$//')
 	echo -e "$r"
 
 elif [[ ! -z $service ]]; then # search by service name
-	r=$(grep -w -i $service "$db" | grep -v ^# | sed 's/Ports: /\'$'\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | grep -i -e "Host: " -e ${service} | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | sed 's/Ignored State.*$//')
+	r=$(grep -w -E -i -e "($service)" "$db" | grep -v ^# | sed 's/Ports: /\'$'\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | grep -i -E -e "Host: " -e "(${service})" | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | sed 's/Ignored State.*$//')
 	echo -e "$r"
 
 else
