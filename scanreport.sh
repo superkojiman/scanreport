@@ -46,7 +46,7 @@ else
 	r=$(cat "$db" | grep -v ^# | sed 's/Ports: /\'$'\n/g' | tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | sed 's/Ignored State.*$//')
 fi
 
-if [[ ! -z $addressonly ]]; then # output only IPs/hostnames
+if [[ $addressonly ]]; then # output only IPs/hostnames
 	echo -e "$r" | grep "Host:" | awk {'print $2'}
 else
 	echo -e "$r"
