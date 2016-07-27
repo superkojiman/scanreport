@@ -8,7 +8,6 @@ function usage {
 db=""
 ip=""
 port=""
-all=0
 proto=""
 addressonly=""
 while getopts "f:i:p:P:s:a" OPT; do
@@ -34,14 +33,15 @@ if [[ -z $db ]]; then
 fi
 
 if [[ ! -z $ip ]]; then # search by IP
-	r=$(grep -w $ip "$db" | grep -v ^# | sed 's/Ports: /\'$'\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | sed 's/Ignored State.*$//')
+	r=$(grep -w "$ip" "$db" | grep -v ^# | sed 's/Ports: /\'$'\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | sed 's/Ignored State.*$//')
 
 elif [[ ! -z $port ]]; then # search by port number
 	r=$(grep -w -E -e "($port)\/open" "$db" | grep -v ^# | sed 's/Ports: /\'$'\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | grep -E -e "Host: " -e "^(${port})" | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | sed 's/Ignored State.*$//')
 
 elif [[ ! -z $service ]]; then # search by service name
 	r=$(grep -w -E -i -e "($service)" "$db" | grep -v ^# | sed 's/Ports: /\'$'\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | grep -i -E -e "Host: " -e "(${service})" | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | sed 's/Ignored State.*$//')
-
+elif [[ ! -z $proto ]]; then
+	r=$(grep -w -E -i -e "($proto)" "$db" | grep -v ^# | sed 's/Ports: /\'$'\n/g' |  tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | grep -i -E -e "Host: " -e "(${proto})" | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | sed 's/Ignored State.*$//')
 else
 	r=$(cat "$db" | grep -v ^# | sed 's/Ports: /\'$'\n/g' | tr '/' '\t' | tr ',' '\n' | sed 's/^ //g' | grep -v "Status: Up" | sed 's/Host:/\\033[0;32mHost:\\033[0;39m/g' | sed 's/Ignored State.*$//')
 fi
